@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/agambondan/web-go-blog-grpc-rest/app/config"
 	"github.com/agambondan/web-go-blog-grpc-rest/insecure"
 	"log"
 	"net"
@@ -13,6 +14,7 @@ import (
 )
 
 var (
+	configuration          config.Configuration
 	pathFileEnvDevelopment = "./.env.development"
 	pathFileEnvProduction  = "./.env.production"
 )
@@ -32,6 +34,7 @@ func init() {
 		}
 		os.Setenv("environment", "production")
 	}
+	configuration.Init()
 }
 
 func main() {
