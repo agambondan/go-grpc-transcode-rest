@@ -4,7 +4,7 @@ package main;
 
 option go_package = "./proto";
 
-import "google/protobuf/timestamp.proto";
+//import "google/protobuf/timestamp.proto";
 
 service UserService {
   rpc Add(User) returns (Response);
@@ -31,9 +31,9 @@ message BaseInt {
 }
 
 message BaseDate {
-  google.protobuf.Timestamp created_at = 1;
-  google.protobuf.Timestamp updated_at = 2;
-  google.protobuf.Timestamp deleted_at = 3;
+  string created_at = 1;
+  string updated_at = 2;
+  string deleted_at = 3;
 }
 
 message User {
@@ -53,5 +53,5 @@ message FindResponse {
 
 message FindAllResponse {
   Response response = 1;
-  repeated User user = 2;
+  repeated User users = 2;
 }

@@ -1,4 +1,4 @@
-package insecure
+package security
 
 import (
 	"crypto/tls"

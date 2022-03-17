@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/agambondan/web-go-blog-grpc-rest/app/config"
-	"github.com/agambondan/web-go-blog-grpc-rest/insecure"
+	"github.com/agambondan/web-go-blog-grpc-rest/app/http/security"
 	"log"
 	"net"
 	"os"
@@ -50,9 +50,9 @@ func main() {
 		panic(err)
 	}
 
-	grpcServer := grpc.NewServer(grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)))
+	grpcServer := grpc.NewServer(grpc.Creds(credentials.NewServerTLSFromCert(&security.Cert)))
 
-	// pb.RegisterUserServiceServer(grpcServer, &server{})
+	//pb.RegisterUserServiceServer(grpcServer, &server{})
 
 	log.Println("Server is running")
 	err = grpcServer.Serve(listener)

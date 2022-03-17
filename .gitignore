@@ -4,7 +4,7 @@
 !/assets/
 !/grpc/
 !/tools
-!/insecure
+!/app/http/security/insecure
 !/docs/
 !/tests/
 !/.env.example

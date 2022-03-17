@@ -17,31 +17,38 @@ func main() {
 	}
 	client := pb.NewUserServiceClient(conn)
 
-	response, err := client.Add(context.Background(), &pb.User{Id: "1", Money: 1000})
+	findResponse, err := client.FindAll(context.Background(), &pb.EmptyRequest{})
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println(response)
-	log.Println(response.Message)
+	log.Println(findResponse, "\n\n")
+	log.Println(findResponse.Users)
 
-	findResponse, err := client.Find(context.Background(), &pb.Id{Id: "1"})
-	if err != nil {
-		log.Println(err)
-	}
-	log.Println(findResponse)
-	log.Println(findResponse.User)
-
-	findResponse, err = client.Find(context.Background(), &pb.Id{Id: "2"})
-	if err != nil {
-		log.Println(err)
-	}
-	log.Println(findResponse)
-	log.Println(findResponse.User)
-
-	response, err = client.Echo(context.Background(), &pb.Response{Message: "Hello World"})
-	if err != nil {
-		log.Println(err)
-	}
-	log.Println(response)
-	log.Println(response.Message)
+	//response, err := client.Add(context.Background(), &pb.User{Id: "1", Money: 1000})
+	//if err != nil {
+	//	log.Println(err)
+	//}
+	//log.Println(response)
+	//log.Println(response.Message)
+	//
+	//findResponse, err := client.Find(context.Background(), &pb.Id{Id: "1"})
+	//if err != nil {
+	//	log.Println(err)
+	//}
+	//log.Println(findResponse)
+	//log.Println(findResponse.User)
+	//
+	//findResponse, err = client.Find(context.Background(), &pb.Id{Id: "2"})
+	//if err != nil {
+	//	log.Println(err)
+	//}
+	//log.Println(findResponse)
+	//log.Println(findResponse.User)
+	//
+	//response, err = client.Echo(context.Background(), &pb.Response{Message: "Hello World"})
+	//if err != nil {
+	//	log.Println(err)
+	//}
+	//log.Println(response)
+	//log.Println(response.Message)
 }
