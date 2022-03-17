@@ -4,7 +4,7 @@ import (
 	"os"
 )
 
-var Config *Configuration
+var Config Configuration
 
 type Configuration struct {
 	DBDriver      string
@@ -17,6 +17,11 @@ type Configuration struct {
 	RedisHost     string
 	RedisPort     string
 	RedisPassword string
+	AccessSecret  string
+	RefreshSecret string
+	CookiesSecret string
+	Salt          string
+	CipherKey     string
 }
 
 func (config *Configuration) Init() {
@@ -30,4 +35,9 @@ func (config *Configuration) Init() {
 	Config.RedisHost = os.Getenv("REDIS_HOST")
 	Config.RedisPort = os.Getenv("REDIS_PORT")
 	Config.RedisPassword = os.Getenv("REDIS_PASSWORD")
+	Config.AccessSecret = os.Getenv("ACCESS_SECRET")
+	Config.RefreshSecret = os.Getenv("REFRESH_SECRET")
+	Config.CookiesSecret = os.Getenv("COOKIES_SECRET")
+	Config.Salt = os.Getenv("SALT")
+	Config.CipherKey = os.Getenv("CIPHER_KEY")
 }

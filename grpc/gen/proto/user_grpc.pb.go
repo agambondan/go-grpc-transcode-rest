@@ -23,8 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	Add(ctx context.Context, in *User, opts ...grpc.CallOption) (*Response, error)
-	Find(ctx context.Context, in *Id, opts ...grpc.CallOption) (*FindResponse, error)
-	Echo(ctx context.Context, in *Response, opts ...grpc.CallOption) (*Response, error)
+	FindAll(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*FindAllResponse, error)
+	Find(ctx context.Context, in *BaseUUID, opts ...grpc.CallOption) (*FindResponse, error)
 }
 
 type userServiceClient struct {
@@ -44,18 +44,18 @@ func (c *userServiceClient) Add(ctx context.Context, in *User, opts ...grpc.Call
 	return out, nil
 }
 
-func (c *userServiceClient) Find(ctx context.Context, in *Id, opts ...grpc.CallOption) (*FindResponse, error) {
-	out := new(FindResponse)
-	err := c.cc.Invoke(ctx, "/main.UserService/Find", in, out, opts...)
+func (c *userServiceClient) FindAll(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*FindAllResponse, error) {
+	out := new(FindAllResponse)
+	err := c.cc.Invoke(ctx, "/main.UserService/FindAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) Echo(ctx context.Context, in *Response, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/main.UserService/Echo", in, out, opts...)
+func (c *userServiceClient) Find(ctx context.Context, in *BaseUUID, opts ...grpc.CallOption) (*FindResponse, error) {
+	out := new(FindResponse)
+	err := c.cc.Invoke(ctx, "/main.UserService/Find", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,8 +67,8 @@ func (c *userServiceClient) Echo(ctx context.Context, in *Response, opts ...grpc
 // for forward compatibility
 type UserServiceServer interface {
 	Add(context.Context, *User) (*Response, error)
-	Find(context.Context, *Id) (*FindResponse, error)
-	Echo(context.Context, *Response) (*Response, error)
+	FindAll(context.Context, *EmptyRequest) (*FindAllResponse, error)
+	Find(context.Context, *BaseUUID) (*FindResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -79,11 +79,11 @@ type UnimplementedUserServiceServer struct {
 func (UnimplementedUserServiceServer) Add(context.Context, *User) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
 }
-func (UnimplementedUserServiceServer) Find(context.Context, *Id) (*FindResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
+func (UnimplementedUserServiceServer) FindAll(context.Context, *EmptyRequest) (*FindAllResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindAll not implemented")
 }
-func (UnimplementedUserServiceServer) Echo(context.Context, *Response) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
+func (UnimplementedUserServiceServer) Find(context.Context, *BaseUUID) (*FindResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -116,8 +116,26 @@ func _UserService_Add_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_FindAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).FindAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.UserService/FindAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).FindAll(ctx, req.(*EmptyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_Find_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
+	in := new(BaseUUID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -129,25 +147,7 @@ func _UserService_Find_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: "/main.UserService/Find",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).Find(ctx, req.(*Id))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Response)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServiceServer).Echo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/main.UserService/Echo",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).Echo(ctx, req.(*Response))
+		return srv.(UserServiceServer).Find(ctx, req.(*BaseUUID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -164,12 +164,12 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_Add_Handler,
 		},
 		{
-			MethodName: "Find",
-			Handler:    _UserService_Find_Handler,
+			MethodName: "FindAll",
+			Handler:    _UserService_FindAll_Handler,
 		},
 		{
-			MethodName: "Echo",
-			Handler:    _UserService_Echo_Handler,
+			MethodName: "Find",
+			Handler:    _UserService_Find_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -35,6 +35,8 @@ func init() {
 		os.Setenv("environment", "production")
 	}
 	configuration.Init()
+	log.Println(config.Config)
+
 }
 
 func main() {
