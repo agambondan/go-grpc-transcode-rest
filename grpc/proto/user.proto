@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package main;
+
+option go_package = "./proto";
+
+service UserService {
+  rpc Add(User) returns (Response);
+  rpc Find(Id) returns (FindResponse);
+  rpc Echo(Response) returns (Response);
+}
+
+message Response {
+  string message = 1;
+}
+
+message Id {
+  string id = 1;
+}
+
+message User {
+  string id = 1;
+  int32 money = 2;
+}
+
+message FindResponse{
+  Response response = 1;
+  User user = 2;
+}
