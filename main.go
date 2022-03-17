@@ -2,19 +2,17 @@ package main
 
 import (
 	"flag"
-	pb "github.com/agambondan/web-go-blog-grpc-rest/grpc/gen/proto"
 	"github.com/agambondan/web-go-blog-grpc-rest/insecure"
+	"log"
+	"net"
+	"os"
+
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"log"
-	"net"
-	"net/http"
-	"os"
 )
 
 var (
-	server                 http.Server
 	pathFileEnvDevelopment = "./.env.development"
 	pathFileEnvProduction  = "./.env.production"
 )
@@ -49,7 +47,7 @@ func main() {
 
 	grpcServer := grpc.NewServer(grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)))
 
-	pb.RegisterUserServiceServer(grpcServer, &server{})
+	// pb.RegisterUserServiceServer(grpcServer, &server{})
 
 	log.Println("Server is running")
 	err = grpcServer.Serve(listener)

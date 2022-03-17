@@ -3,6 +3,7 @@
 !/build/
 !/assets/
 !/grpc/
+!/tools
 !/insecure
 !/docs/
 !/tests/
