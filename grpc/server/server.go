@@ -18,7 +18,7 @@ func (s *server) Add(ctx context.Context, user *pb.User) (*pb.Response, error) {
 	return &pb.Response{}, nil
 }
 
-func (s *server) FindAll(ctx context.Context, emptyRequest *pb.EmptyRequest) (*pb.FindAllResponse, error) {
+func (s *server) FindAll(ctx context.Context, paginateRequest *pb.PaginateRequest) (*pb.FindAllResponse, error) {
 	var users []*pb.User
 	t := time.Now()
 	users = append(users, &pb.User{

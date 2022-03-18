@@ -17,12 +17,12 @@ func main() {
 	}
 	client := pb.NewUserServiceClient(conn)
 
-	findResponse, err := client.FindAll(context.Background(), &pb.EmptyRequest{})
+	findResponse, err := client.FindAll(context.Background(), &pb.PaginateRequest{})
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println(findResponse, "\n\n")
-	log.Println(findResponse.Users)
+	log.Println(findResponse.Users, "\n\n")
+	//log.Println(findResponse.Users)
 
 	//response, err := client.Add(context.Background(), &pb.User{Id: "1", Money: 1000})
 	//if err != nil {

@@ -3,17 +3,17 @@ package main
 import (
 	"flag"
 	"github.com/agambondan/web-go-blog-grpc-rest/app/config"
-	"github.com/agambondan/web-go-blog-grpc-rest/app/http/security"
+	"github.com/agambondan/web-go-blog-grpc-rest/app/http"
 	"log"
 	"net"
 	"os"
 
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 )
 
 var (
+	server                 http.ServerHttp
 	configuration          config.Configuration
 	pathFileEnvDevelopment = "./.env.development"
 	pathFileEnvProduction  = "./.env.production"
@@ -27,12 +27,12 @@ func init() {
 		if err := godotenv.Load(pathFileEnvDevelopment); err != nil {
 			log.Println("no env gotten")
 		}
-		os.Setenv("environment", "development")
+		os.Setenv("ENVIRONMENT", "development")
 	default:
 		if err := godotenv.Load(pathFileEnvProduction); err != nil {
 			log.Println("no env gotten")
 		}
-		os.Setenv("environment", "production")
+		os.Setenv("ENVIRONMENT", "production")
 	}
 	configuration.Init()
 	log.Println(config.Config)
@@ -50,9 +50,11 @@ func main() {
 		panic(err)
 	}
 
-	grpcServer := grpc.NewServer(grpc.Creds(credentials.NewServerTLSFromCert(&security.Cert)))
+	//grpcServer := grpc.NewServer(grpc.Creds(credentials.NewServerTLSFromCert(&security.Cert)))
+	grpcServer := grpc.NewServer()
 
-	//pb.RegisterUserServiceServer(grpcServer, &server{})
+	server.Run(grpcServer)
+	//pb.RegisterUserServiceServer(grpcServer)
 
 	log.Println("Server is running")
 	err = grpcServer.Serve(listener)

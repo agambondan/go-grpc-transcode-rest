@@ -13,11 +13,11 @@ import (
 
 type Repositories struct {
 	//Role     RoleRepository
-	//User UserRepository
 	//Category CategoryRepository
 	//Article  ArticleRepository
 	//Firebase FirebaseRepository
-	db *gorm.DB
+	User UserRepository
+	db   *gorm.DB
 }
 
 func NewRepositories() (*Repositories, error) {
@@ -50,8 +50,8 @@ func NewRepositories() (*Repositories, error) {
 	}
 	fmt.Printf("We are connected to the %s database with url %s\n", config.Config.DBDriver, dsn)
 	return &Repositories{
-		//User: NewUserRepository(db),
-		db: db,
+		User: NewUserRepository(db),
+		db:   db,
 	}, nil
 }
 

@@ -22,6 +22,7 @@ type Configuration struct {
 	CookiesSecret string
 	Salt          string
 	CipherKey     string
+	Environment   string
 }
 
 func (config *Configuration) Init() {
@@ -40,4 +41,5 @@ func (config *Configuration) Init() {
 	Config.CookiesSecret = os.Getenv("COOKIES_SECRET")
 	Config.Salt = os.Getenv("SALT")
 	Config.CipherKey = os.Getenv("CIPHER_KEY")
+	Config.Environment = os.Getenv("ENVIRONMENT")
 }
