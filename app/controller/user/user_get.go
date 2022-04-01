@@ -26,32 +26,3 @@ func (c *Controller) FindAll(ctx context.Context, paginateRequest *pb.PaginateRe
 	lib.Merge(findAll, &findAllResponse.Users)
 	return &findAllResponse, nil
 }
-
-//func comment() {
-//	var users []*pb.User
-//	t := time.Now()
-//	users = append(users, &pb.User{
-//		Base: &pb.BaseUUID{
-//			Id: uuid.New().String(),
-//			Time: &pb.BaseDate{
-//				CreatedAt: t.String()[:19],
-//				UpdatedAt: t.String()[:19],
-//				DeletedAt: t.String()[:19],
-//			},
-//		},
-//		FullName:    "Firman Agam",
-//		Gender:      "Male",
-//		Email:       "agamwork28@gmail.com",
-//		PhoneNumber: "081214025919",
-//		Username:    "agambondan",
-//		Password:    "agambondan",
-//	})
-//	findAllResponse := pb.FindAllResponse{
-//		Response: &pb.Response{
-//			Status:  true,
-//			Message: "Data Found",
-//			Error:   "",
-//		},
-//		Users: users,
-//	}
-//}

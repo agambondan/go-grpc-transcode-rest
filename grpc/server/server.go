@@ -22,15 +22,21 @@ func (s *server) FindAll(ctx context.Context, paginateRequest *pb.PaginateReques
 	var users []*pb.User
 	t := time.Now()
 	users = append(users, &pb.User{
-		Base: &pb.BaseUUID{
-			Id: uuid.New().String(),
-			Time: &pb.BaseDate{
-				CreatedAt: t.String()[:19],
-				UpdatedAt: t.String()[:19],
-				DeletedAt: t.String()[:19],
-			},
-		},
-		FullName:    "Firman Agam",
+		//Base: &pb.BaseUUID{
+		//	Id: uuid.New().String(),
+		//	Time: &pb.BaseDate{
+		//		CreatedAt: t.String()[:19],
+		//		UpdatedAt: t.String()[:19],
+		//		DeletedAt: t.String()[:19],
+		//	},
+		//},
+		//FullName:    "Firman Agam",
+		Id:          uuid.New().String(),
+		CreatedAt:   t.String(),
+		UpdatedAt:   t.String(),
+		DeletedAt:   "",
+		FirstName:   "Firman",
+		LastName:    "Agam",
 		Gender:      "Male",
 		Email:       "agamwork28@gmail.com",
 		PhoneNumber: "081214025919",

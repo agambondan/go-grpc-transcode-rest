@@ -5,21 +5,23 @@ package main;
 option go_package = "./proto";
 
 import "google/api/annotations.proto";
+//import "google/protobuf/datetime.proto";
 
 service UserService {
   rpc Add(User) returns (Response){}
   rpc FindAll(PaginateRequest) returns (FindAllResponse){
     option (google.api.http) = {
-      get: "/users",
+      get: "/users"
     };
   }
-  rpc Find(BaseUUID) returns (FindResponse){}
+  rpc Find(PaginateRequest) returns (FindResponse){}
 }
 
 message PaginateRequest {
   int64 size = 1;
   int64 page = 2;
   string sort = 3;
+  string id = 4;
 }
 
 message Response {
@@ -28,38 +30,27 @@ message Response {
   string error = 3;
 }
 
-message BaseUUID {
-  string id = 1;
-  BaseDate time = 2;
-}
-
-message BaseInt {
-  int64 id = 1;
-  BaseDate time = 2;
-}
-
-message BaseDate {
-  string created_at = 1;
-  string updated_at = 2;
-  string deleted_at = 3;
-}
-
 message User {
-  BaseUUID base = 1;
-  string full_name = 2;
-  string gender = 3;
-  string email = 4;
-  string phone_number = 5;
-  string username = 6;
-  string password = 7;
-}
-
-message FindResponse {
-  Response response = 1;
-  User user = 2;
+  string id = 1;
+//  string uuid  [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}", min_length: 1}];;
+  string created_at = 2;
+  string updated_at = 3;
+  string deleted_at = 4;
+  string first_name = 5;
+  string last_name = 6;
+  string gender = 7;
+  string email = 8;
+  string phone_number = 9;
+  string username = 10;
+  string password = 11;
 }
 
 message FindAllResponse {
   Response response = 1;
   repeated User users = 2;
+}
+
+message FindResponse {
+  Response response = 1;
+  User user = 2;
 }

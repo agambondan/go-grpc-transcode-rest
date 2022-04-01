@@ -23,8 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	Add(ctx context.Context, in *User, opts ...grpc.CallOption) (*Response, error)
-	FindAll(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*FindAllResponse, error)
-	Find(ctx context.Context, in *BaseUUID, opts ...grpc.CallOption) (*FindResponse, error)
+	FindAll(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*FindAllResponse, error)
+	Find(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*FindResponse, error)
 }
 
 type userServiceClient struct {
@@ -44,7 +44,7 @@ func (c *userServiceClient) Add(ctx context.Context, in *User, opts ...grpc.Call
 	return out, nil
 }
 
-func (c *userServiceClient) FindAll(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*FindAllResponse, error) {
+func (c *userServiceClient) FindAll(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*FindAllResponse, error) {
 	out := new(FindAllResponse)
 	err := c.cc.Invoke(ctx, "/main.UserService/FindAll", in, out, opts...)
 	if err != nil {
@@ -53,7 +53,7 @@ func (c *userServiceClient) FindAll(ctx context.Context, in *EmptyRequest, opts 
 	return out, nil
 }
 
-func (c *userServiceClient) Find(ctx context.Context, in *BaseUUID, opts ...grpc.CallOption) (*FindResponse, error) {
+func (c *userServiceClient) Find(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*FindResponse, error) {
 	out := new(FindResponse)
 	err := c.cc.Invoke(ctx, "/main.UserService/Find", in, out, opts...)
 	if err != nil {
@@ -67,8 +67,8 @@ func (c *userServiceClient) Find(ctx context.Context, in *BaseUUID, opts ...grpc
 // for forward compatibility
 type UserServiceServer interface {
 	Add(context.Context, *User) (*Response, error)
-	FindAll(context.Context, *EmptyRequest) (*FindAllResponse, error)
-	Find(context.Context, *BaseUUID) (*FindResponse, error)
+	FindAll(context.Context, *PaginateRequest) (*FindAllResponse, error)
+	Find(context.Context, *PaginateRequest) (*FindResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -79,10 +79,10 @@ type UnimplementedUserServiceServer struct {
 func (UnimplementedUserServiceServer) Add(context.Context, *User) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
 }
-func (UnimplementedUserServiceServer) FindAll(context.Context, *EmptyRequest) (*FindAllResponse, error) {
+func (UnimplementedUserServiceServer) FindAll(context.Context, *PaginateRequest) (*FindAllResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindAll not implemented")
 }
-func (UnimplementedUserServiceServer) Find(context.Context, *BaseUUID) (*FindResponse, error) {
+func (UnimplementedUserServiceServer) Find(context.Context, *PaginateRequest) (*FindResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
@@ -117,7 +117,7 @@ func _UserService_Add_Handler(srv interface{}, ctx context.Context, dec func(int
 }
 
 func _UserService_FindAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmptyRequest)
+	in := new(PaginateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -129,13 +129,13 @@ func _UserService_FindAll_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/main.UserService/FindAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).FindAll(ctx, req.(*EmptyRequest))
+		return srv.(UserServiceServer).FindAll(ctx, req.(*PaginateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _UserService_Find_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BaseUUID)
+	in := new(PaginateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -147,7 +147,7 @@ func _UserService_Find_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: "/main.UserService/Find",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).Find(ctx, req.(*BaseUUID))
+		return srv.(UserServiceServer).Find(ctx, req.(*PaginateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -3,6 +3,9 @@ package security
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
+	"google.golang.org/grpc/credentials"
+	"io/ioutil"
 	"log"
 )
 
@@ -98,11 +101,13 @@ y++y5ej/PejjdmWGR6tEbmwUzTTO/Edux7bBdH7riJNzX51SywYmG5T5kItbozVb
 `
 
 var (
-	Cert     tls.Certificate
-	CertPool *x509.CertPool
+	Cert                tls.Certificate
+	CertPool            *x509.CertPool
+	CredTransportServer credentials.TransportCredentials
+	CredTransportClient credentials.TransportCredentials
 )
 
-func init() {
+func Init() {
 	// it shows your line code while error
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var err error
@@ -116,4 +121,46 @@ func init() {
 	}
 	CertPool = x509.NewCertPool()
 	CertPool.AddCert(Cert.Leaf)
+
+	//CredTransportServer = credentials.NewTLS()
+}
+
+func LoadTLSCredentialsServer() credentials.TransportCredentials {
+	// Load server's certificate and private key
+	serverCert, err := tls.LoadX509KeyPair("./app/http/security/cert/server-cert.pem", "./app/http/security/cert/server-key.pem")
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+
+	// Create the credentials and return it
+	config := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.NoClientCert,
+	}
+
+	return credentials.NewTLS(config)
+}
+
+func LoadTLSCredentialsClient() credentials.TransportCredentials {
+	// Load certificate of the CA who signed server's certificate
+	pemServerCA, err := ioutil.ReadFile("./app/http/security/cert/ca-cert.pem")
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+
+	certPool := x509.NewCertPool()
+	if !certPool.AppendCertsFromPEM(pemServerCA) {
+		log.Println(fmt.Errorf("failed to add server CA's certificate"))
+		return nil
+	}
+
+	// Create the credentials and return it
+	config := &tls.Config{
+		RootCAs:   certPool,
+		ClientCAs: certPool,
+	}
+
+	return credentials.NewTLS(config)
 }

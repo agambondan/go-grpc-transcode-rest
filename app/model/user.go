@@ -7,7 +7,9 @@ type User struct {
 }
 
 type UserAPI struct {
-	FullName    *string `json:"full_name,omitempty" gorm:"type:varchar(24);not null;"`
+	FullName    *string `json:"full_name,omitempty" gorm:"type:varchar(48);not null;"`
+	FirstName   *string `json:"first_name,omitempty" gorm:"type:varchar(24);not null;"`
+	LastName    *string `json:"last_name,omitempty" gorm:"type:varchar(24);not null;"`
 	Gender      *string `json:"gender,omitempty" gorm:"type:varchar(24);not null;"`
 	Email       *string `json:"email,omitempty" gorm:"type:varchar(64);not null;index:idx_email_deleted_at,unique,where:deleted_at is null"`
 	PhoneNumber *string `json:"phone_number,omitempty" gorm:"type:varchar(14);not null;index:idx_phone_number_deleted_at,unique,where:deleted_at is null"`
