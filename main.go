@@ -75,12 +75,13 @@ func main() {
 	// make listener for tcp protocol grcp server
 	listener, err := net.Listen("tcp", addressGRPCServer)
 	if err != nil {
-		log.Println(err)
-		panic(err)
+		log.Fatalln(err)
 	}
 
+	// ssl/tls
 	grpcServer := grpc.NewServer(grpc.Creds(security.LoadTLSCredentialsServer()))
-	//grpcServer := grpc.NewServer(grpc.Creds(credentials.NewServerTLSFromCert(&security.Cert)))
+
+	//// insecure
 	//grpcServer := grpc.NewServer()
 
 	server.RunGRPC(grpcServer)
@@ -88,7 +89,6 @@ func main() {
 	log.Println("Server is running on :", addressGRPCServer)
 	err = grpcServer.Serve(listener)
 	if err != nil {
-		log.Println(err)
-		panic(err)
+		log.Fatalln(err)
 	}
 }
