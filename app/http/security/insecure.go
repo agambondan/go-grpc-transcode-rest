@@ -122,7 +122,36 @@ func Init() {
 	CertPool = x509.NewCertPool()
 	CertPool.AddCert(Cert.Leaf)
 
-	//CredTransportServer = credentials.NewTLS()
+	// Load server's certificate and private key
+	serverCert, err := tls.LoadX509KeyPair("./app/http/security/cert/server-cert.pem", "./app/http/security/cert/server-key.pem")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// Create the credentials and return it
+	configServer := &tls.Config{
+		Certificates: []tls.Certificate{serverCert},
+		ClientAuth:   tls.NoClientCert,
+	}
+	CredTransportServer = credentials.NewTLS(configServer)
+
+	// Load certificate of the CA who signed server's certificate
+	pemServerCA, err := ioutil.ReadFile("./app/http/security/cert/ca-cert.pem")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	certPool := x509.NewCertPool()
+	if !certPool.AppendCertsFromPEM(pemServerCA) {
+		log.Fatalln(fmt.Errorf("failed to add server CA's certificate"))
+	}
+
+	// Create the credentials and return it
+	configClient := &tls.Config{
+		RootCAs:   certPool,
+		ClientCAs: certPool,
+	}
+	CredTransportClient = credentials.NewTLS(configClient)
 }
 
 func LoadTLSCredentialsServer() credentials.TransportCredentials {

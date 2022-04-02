@@ -57,7 +57,7 @@ func main() {
 						MarshalOptions: protojson.MarshalOptions{
 							Multiline:       true,
 							UseProtoNames:   true,
-							EmitUnpopulated: false, // for use omitempty in json output
+							EmitUnpopulated: false, // disabled for use omitempty in json output
 						},
 						UnmarshalOptions: protojson.UnmarshalOptions{
 							DiscardUnknown: true,
@@ -67,7 +67,8 @@ func main() {
 			),
 		)
 
-		opts := []grpc.DialOption{grpc.WithTransportCredentials(security.LoadTLSCredentialsServer())}
+		//opts := []grpc.DialOption{grpc.WithTransportCredentials(security.LoadTLSCredentialsServer())}
+		opts := []grpc.DialOption{grpc.WithTransportCredentials(security.CredTransportServer)}
 		// run transcoding grpc to rest
 		server.RunRest(mux, opts)
 
@@ -83,7 +84,8 @@ func main() {
 	}
 
 	// running on ssl/tls
-	grpcServer := grpc.NewServer(grpc.Creds(security.LoadTLSCredentialsServer()))
+	//grpcServer := grpc.NewServer(grpc.Creds(security.LoadTLSCredentialsServer()))
+	grpcServer := grpc.NewServer(grpc.Creds(security.CredTransportServer))
 
 	//// running on insecure
 	//grpcServer := grpc.NewServer()

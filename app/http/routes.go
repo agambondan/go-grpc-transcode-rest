@@ -11,14 +11,17 @@ import (
 )
 
 func (server *ServerHttp) routesRest(mux *runtime.ServeMux, repositories *repo.Repositories, dialOption []grpc.DialOption) {
-	newUserController := user.NewUserController(repositories.User)
-	err := pb.RegisterUserServiceHandlerFromEndpoint(context.Background(), mux, "0.0.0.0:8080", dialOption)
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	err := pb.RegisterUserServiceHandlerFromEndpoint(ctx, mux, "localhost:8080", dialOption)
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
+	newUserController := user.NewUserController(repositories.User)
 	err = pb.RegisterUserServiceHandlerServer(context.Background(), mux, newUserController)
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
 }
 

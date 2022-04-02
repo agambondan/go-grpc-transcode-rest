@@ -1,6 +1,9 @@
 package lib
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+	"log"
+)
 
 func Strptr(s string) *string {
 	return &s
@@ -24,4 +27,32 @@ func UUIDPtr(u uuid.UUID) *uuid.UUID {
 
 func BoolPtr(b bool) *bool {
 	return &b
+}
+
+func PrintPtr(obj interface{}) interface{} {
+	//switch data := obj.(type) {
+	//case string:
+	//	log.Println(data, "string")
+	//default:
+	//	log.Println(data)
+	//}
+	var resultArrayInterface []interface{}
+	var resultInterface = new(interface{})
+	var resultMap = make(map[string]interface{})
+	err := Merge(obj, &resultMap)
+	if err != nil {
+		log.Println(err)
+		err = Merge(obj, &resultInterface)
+		if err != nil {
+			log.Println(err)
+			err = Merge(obj, &resultArrayInterface)
+			if err != nil {
+				log.Println(err)
+				return nil
+			}
+			return resultArrayInterface
+		}
+		return resultInterface
+	}
+	return resultMap
 }

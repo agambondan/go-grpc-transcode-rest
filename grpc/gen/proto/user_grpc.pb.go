@@ -25,7 +25,7 @@ const _ = grpc.SupportPackageIsVersion7
 type UserServiceClient interface {
 	Add(ctx context.Context, in *User, opts ...grpc.CallOption) (*Response, error)
 	FindAll(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*structpb.Value, error)
-	Find(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*Response, error)
+	FindByID(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*structpb.Value, error)
 }
 
 type userServiceClient struct {
@@ -54,9 +54,9 @@ func (c *userServiceClient) FindAll(ctx context.Context, in *PaginateRequest, op
 	return out, nil
 }
 
-func (c *userServiceClient) Find(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/main.UserService/Find", in, out, opts...)
+func (c *userServiceClient) FindByID(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*structpb.Value, error) {
+	out := new(structpb.Value)
+	err := c.cc.Invoke(ctx, "/main.UserService/FindByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (c *userServiceClient) Find(ctx context.Context, in *PaginateRequest, opts 
 type UserServiceServer interface {
 	Add(context.Context, *User) (*Response, error)
 	FindAll(context.Context, *PaginateRequest) (*structpb.Value, error)
-	Find(context.Context, *PaginateRequest) (*Response, error)
+	FindByID(context.Context, *PaginateRequest) (*structpb.Value, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -83,8 +83,8 @@ func (UnimplementedUserServiceServer) Add(context.Context, *User) (*Response, er
 func (UnimplementedUserServiceServer) FindAll(context.Context, *PaginateRequest) (*structpb.Value, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindAll not implemented")
 }
-func (UnimplementedUserServiceServer) Find(context.Context, *PaginateRequest) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
+func (UnimplementedUserServiceServer) FindByID(context.Context, *PaginateRequest) (*structpb.Value, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindByID not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -135,20 +135,20 @@ func _UserService_FindAll_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_Find_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserService_FindByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PaginateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).Find(ctx, in)
+		return srv.(UserServiceServer).FindByID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.UserService/Find",
+		FullMethod: "/main.UserService/FindByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).Find(ctx, req.(*PaginateRequest))
+		return srv.(UserServiceServer).FindByID(ctx, req.(*PaginateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -169,8 +169,8 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_FindAll_Handler,
 		},
 		{
-			MethodName: "Find",
-			Handler:    _UserService_Find_Handler,
+			MethodName: "FindByID",
+			Handler:    _UserService_FindByID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

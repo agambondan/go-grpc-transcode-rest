@@ -16,8 +16,7 @@ type ServerHttp struct {
 func (server *ServerHttp) Init() {
 	repositories, err := repo.NewRepositories()
 	if err != nil {
-		log.Println(err)
-		panic(err)
+		log.Fatalln(err)
 	}
 	server.Repositories = repositories
 }
