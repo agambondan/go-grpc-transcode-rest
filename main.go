@@ -45,7 +45,7 @@ func init() {
 }
 
 func main() {
-	// it shows your line code while error
+	// it shows your line code while print
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	server.Init()
 	go func() {
@@ -67,8 +67,9 @@ func main() {
 			),
 		)
 
+		opts := []grpc.DialOption{grpc.WithTransportCredentials(security.LoadTLSCredentialsServer())}
 		// run transcoding grpc to rest
-		server.RunRest(mux)
+		server.RunRest(mux, opts)
 
 		log.Println("REST is running on :", fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT_GRPC_TRANSCODE")))
 		// http server

@@ -22,9 +22,9 @@ func (server *ServerHttp) Init() {
 	server.Repositories = repositories
 }
 
-func (server *ServerHttp) RunRest(mux *runtime.ServeMux) {
+func (server *ServerHttp) RunRest(mux *runtime.ServeMux, dialOptions []grpc.DialOption) {
 	server.Mux = mux
-	server.routesRest(mux, server.Repositories)
+	server.routesRest(mux, server.Repositories, dialOptions)
 }
 
 func (server *ServerHttp) RunGRPC(grpcServer *grpc.Server) {

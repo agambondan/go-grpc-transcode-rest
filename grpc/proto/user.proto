@@ -6,12 +6,12 @@ option go_package = "./proto";
 
 import "google/api/annotations.proto";
 import "google/protobuf/struct.proto";
-//import "google/protobuf/datetime.proto";
 
 service UserService {
   rpc Add(User) returns (Response){
     option (google.api.http) = {
       post: "/users"
+      body: "*"
     };
   }
   rpc FindAll(PaginateRequest) returns (google.protobuf.Value){
@@ -19,9 +19,9 @@ service UserService {
       get: "/users"
     };
   }
-  rpc Find(PaginateRequest) returns (Response){
+  rpc Find(PaginateRequest) returns (google.protobuf.Value){
     option (google.api.http) = {
-      get: "/user"
+      get: "/users/{id}"
     };
   }
 }
@@ -52,17 +52,3 @@ message User {
   string username = 10;
   string password = 11;
 }
-
-message Users {
-  repeated User data = 1;
-}
-
-//message FindAllResponse {
-//  Response response = 1;
-//  repeated User users = 2;
-//}
-//
-//message FindResponse {
-//  Response response = 1;
-//  User user = 2;
-//}

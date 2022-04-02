@@ -10,9 +10,13 @@ import (
 	"log"
 )
 
-func (server *ServerHttp) routesRest(mux *runtime.ServeMux, repositories *repo.Repositories) {
+func (server *ServerHttp) routesRest(mux *runtime.ServeMux, repositories *repo.Repositories, dialOption []grpc.DialOption) {
 	newUserController := user.NewUserController(repositories.User)
-	err := pb.RegisterUserServiceHandlerServer(context.Background(), mux, newUserController)
+	err := pb.RegisterUserServiceHandlerFromEndpoint(context.Background(), mux, "0.0.0.0:8080", dialOption)
+	if err != nil {
+		log.Println(err)
+	}
+	err = pb.RegisterUserServiceHandlerServer(context.Background(), mux, newUserController)
 	if err != nil {
 		log.Println(err)
 	}
