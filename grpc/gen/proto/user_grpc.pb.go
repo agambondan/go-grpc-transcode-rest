@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	structpb "google.golang.org/protobuf/types/known/structpb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -23,8 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	Add(ctx context.Context, in *User, opts ...grpc.CallOption) (*Response, error)
-	FindAll(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*FindAllResponse, error)
-	Find(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*FindResponse, error)
+	FindAll(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*structpb.Value, error)
+	Find(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*Response, error)
 }
 
 type userServiceClient struct {
@@ -44,8 +45,8 @@ func (c *userServiceClient) Add(ctx context.Context, in *User, opts ...grpc.Call
 	return out, nil
 }
 
-func (c *userServiceClient) FindAll(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*FindAllResponse, error) {
-	out := new(FindAllResponse)
+func (c *userServiceClient) FindAll(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*structpb.Value, error) {
+	out := new(structpb.Value)
 	err := c.cc.Invoke(ctx, "/main.UserService/FindAll", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -53,8 +54,8 @@ func (c *userServiceClient) FindAll(ctx context.Context, in *PaginateRequest, op
 	return out, nil
 }
 
-func (c *userServiceClient) Find(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*FindResponse, error) {
-	out := new(FindResponse)
+func (c *userServiceClient) Find(ctx context.Context, in *PaginateRequest, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
 	err := c.cc.Invoke(ctx, "/main.UserService/Find", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -67,8 +68,8 @@ func (c *userServiceClient) Find(ctx context.Context, in *PaginateRequest, opts 
 // for forward compatibility
 type UserServiceServer interface {
 	Add(context.Context, *User) (*Response, error)
-	FindAll(context.Context, *PaginateRequest) (*FindAllResponse, error)
-	Find(context.Context, *PaginateRequest) (*FindResponse, error)
+	FindAll(context.Context, *PaginateRequest) (*structpb.Value, error)
+	Find(context.Context, *PaginateRequest) (*Response, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -79,10 +80,10 @@ type UnimplementedUserServiceServer struct {
 func (UnimplementedUserServiceServer) Add(context.Context, *User) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
 }
-func (UnimplementedUserServiceServer) FindAll(context.Context, *PaginateRequest) (*FindAllResponse, error) {
+func (UnimplementedUserServiceServer) FindAll(context.Context, *PaginateRequest) (*structpb.Value, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindAll not implemented")
 }
-func (UnimplementedUserServiceServer) Find(context.Context, *PaginateRequest) (*FindResponse, error) {
+func (UnimplementedUserServiceServer) Find(context.Context, *PaginateRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}

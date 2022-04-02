@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package main;
+
+option go_package = "./proto";
+
+//message Response {
+//  bool status = 1;
+//  string message = 2;
+//  string error = 3;
+////  oneof data {
+////    Users users = 1;
+////  }
+//}

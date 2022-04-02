@@ -1,10 +1,14 @@
+# Documentation
+# to ignore error just add - (dash) before command
+#
+
 run :
 	go run main.go -environment development
 
 server:
 	make clean-cert
 	make cert-server-side
-	make clean
+	- make clean
 	make create
 	make run
 

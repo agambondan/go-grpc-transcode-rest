@@ -5,16 +5,31 @@ package main;
 option go_package = "./proto";
 
 import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
 //import "google/protobuf/datetime.proto";
 
 service UserService {
-  rpc Add(User) returns (Response){}
-  rpc FindAll(PaginateRequest) returns (FindAllResponse){
+  rpc Add(User) returns (Response){
+    option (google.api.http) = {
+      post: "/users"
+    };
+  }
+  rpc FindAll(PaginateRequest) returns (google.protobuf.Value){
     option (google.api.http) = {
       get: "/users"
     };
   }
-  rpc Find(PaginateRequest) returns (FindResponse){}
+  rpc Find(PaginateRequest) returns (Response){
+    option (google.api.http) = {
+      get: "/user"
+    };
+  }
+}
+
+message Response {
+  bool status = 1;
+  string message = 2;
+  string error = 3;
 }
 
 message PaginateRequest {
@@ -24,15 +39,8 @@ message PaginateRequest {
   string id = 4;
 }
 
-message Response {
-  bool status = 1;
-  string message = 2;
-  string error = 3;
-}
-
 message User {
   string id = 1;
-//  string uuid  [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}", min_length: 1}];;
   string created_at = 2;
   string updated_at = 3;
   string deleted_at = 4;
@@ -45,12 +53,16 @@ message User {
   string password = 11;
 }
 
-message FindAllResponse {
-  Response response = 1;
-  repeated User users = 2;
+message Users {
+  repeated User data = 1;
 }
 
-message FindResponse {
-  Response response = 1;
-  User user = 2;
-}
+//message FindAllResponse {
+//  Response response = 1;
+//  repeated User users = 2;
+//}
+//
+//message FindResponse {
+//  Response response = 1;
+//  User user = 2;
+//}

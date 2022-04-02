@@ -4,6 +4,7 @@ type User struct {
 	BaseUUID
 	BaseImage
 	UserAPI
+	Role *Role `json:"role,omitempty"`
 }
 
 type UserAPI struct {

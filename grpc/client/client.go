@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/agambondan/web-go-blog-grpc-rest/app/http/security"
 	pb "github.com/agambondan/web-go-blog-grpc-rest/grpc/gen/proto"
+	"github.com/golang/protobuf/ptypes/struct"
 	"google.golang.org/grpc"
 	"log"
 )
@@ -13,6 +14,7 @@ func main() {
 
 	// init global variable security
 	security.Init()
+	structpb.Struct{}
 
 	// connection to server grpc
 	conn, err := grpc.Dial("0.0.0.0:6060", grpc.WithTransportCredentials(security.LoadTLSCredentialsClient()))

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/agambondan/web-go-blog-grpc-rest/app/config"
 	httpServer "github.com/agambondan/web-go-blog-grpc-rest/app/http"
 	"github.com/agambondan/web-go-blog-grpc-rest/app/http/security"
@@ -49,44 +50,46 @@ func main() {
 	server.Init()
 	go func() {
 		// init mux server
-		mux := runtime.NewServeMux(runtime.WithMarshalerOption(
-			runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
-				Marshaler: &runtime.JSONPb{
-					MarshalOptions: protojson.MarshalOptions{
-						Multiline:       true,
-						UseProtoNames:   true,
-						EmitUnpopulated: true,
-					},
-					UnmarshalOptions: protojson.UnmarshalOptions{
-						DiscardUnknown: true,
+		mux := runtime.NewServeMux(
+			runtime.WithMarshalerOption(
+				runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
+					Marshaler: &runtime.JSONPb{
+						MarshalOptions: protojson.MarshalOptions{
+							Multiline:       true,
+							UseProtoNames:   true,
+							EmitUnpopulated: false, // for use omitempty in json output
+						},
+						UnmarshalOptions: protojson.UnmarshalOptions{
+							DiscardUnknown: true,
+						},
 					},
 				},
-			},
-		))
+			),
+		)
 
 		// run transcoding grpc to rest
 		server.RunRest(mux)
 
+		log.Println("REST is running on :", fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT_GRPC_TRANSCODE")))
 		// http server
-		log.Fatalln(http.ListenAndServe("localhost:8080", mux))
+		log.Fatalln(http.ListenAndServe(fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT_GRPC_TRANSCODE")), mux))
 	}()
 
-	addressGRPCServer := "0.0.0.0:6060"
-	// make listener for tcp protocol grcp server
-	listener, err := net.Listen("tcp", addressGRPCServer)
+	// make listener for tcp protocol grpc server
+	listener, err := net.Listen(os.Getenv("TCP_NETWORK"), fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT_GRPC")))
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// ssl/tls
+	// running on ssl/tls
 	grpcServer := grpc.NewServer(grpc.Creds(security.LoadTLSCredentialsServer()))
 
-	//// insecure
+	//// running on insecure
 	//grpcServer := grpc.NewServer()
 
 	server.RunGRPC(grpcServer)
 
-	log.Println("Server is running on :", addressGRPCServer)
+	log.Println("GRPC is running on :", fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT_GRPC")))
 	err = grpcServer.Serve(listener)
 	if err != nil {
 		log.Fatalln(err)

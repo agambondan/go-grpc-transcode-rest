@@ -3,6 +3,7 @@ module github.com/agambondan/web-go-blog-grpc-rest
 go 1.16
 
 require (
+	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.1.2
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.8.0
 	github.com/joho/godotenv v1.4.0
