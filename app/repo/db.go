@@ -3,8 +3,10 @@ package repo
 import (
 	"fmt"
 	"github.com/agambondan/web-go-blog-grpc-rest/app/config"
+	"github.com/agambondan/web-go-blog-grpc-rest/app/migrations"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"log"
@@ -24,6 +26,8 @@ func NewRepositories() (*Repositories, error) {
 	logLevel := logger.Info
 
 	switch os.Getenv("ENVIRONMENT") {
+	case "development":
+		logLevel = logger.Error
 	case "staging":
 		logLevel = logger.Error
 	case "production":
@@ -40,7 +44,7 @@ func NewRepositories() (*Repositories, error) {
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=Asia/Jakarta", config.Config.DBHost, config.Config.DBPort, config.Config.DBUser, config.Config.DBPassword, config.Config.DBName)
 	db, err := gorm.Open(postgres.Open(dsn), &gormConfig)
 	if err != nil {
-		dsn := os.Getenv("URI")
+		dsn = os.Getenv("URI")
 		db, err = gorm.Open(postgres.Open(dsn), &gormConfig)
 		if err != nil {
 			fmt.Printf("Cannot connect to %s database url %s", config.Config.DBDriver, dsn)
@@ -55,46 +59,47 @@ func NewRepositories() (*Repositories, error) {
 	}, nil
 }
 
-//
-//// Close closes the  database connection
-//func (s *Repositories) Close() error {
-//	db, _ := s.db.DB()
-//	return db.Close()
-//}
-//
-//func (s *Repositories) Migrations() error {
-//	err := s.db.AutoMigrate(migrations.ModelMigrations...)
-//	if err != nil {
-//		return err
-//	}
-//	err = s.db.Migrator().DropTable("schema_migration")
-//	if err != nil {
-//		return err
-//	}
-//	return nil
-//}
-//
-//// Seeder This migrate all tables
-//func (s *Repositories) Seeder() error {
-//	for i := range migrations.DataSeeds {
-//		tx := s.db.Begin()
-//		defer func() {
-//			if r := recover(); r != nil {
-//				tx.Rollback()
-//			}
-//		}()
-//
-//		if err := tx.Clauses(clause.OnConflict{DoNothing: true}).Create(migrations.DataSeeds[i]).Error; nil != err {
-//			tx.Rollback()
-//		}
-//
-//		if err := tx.Commit().Error; nil != err {
-//			tx.Rollback()
-//		}
-//	}
-//	return nil
-//}
-//
+// Close closes the  database connection
+func (s *Repositories) Close() error {
+	db, _ := s.db.DB()
+	return db.Close()
+}
+
+// Migrations to migrate any struct to table/model in database
+func (s *Repositories) Migrations() error {
+	err := s.db.AutoMigrate(migrations.ModelMigrations...)
+	if err != nil {
+		return err
+	}
+	err = s.db.Migrator().DropTable("schema_migration")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Seeder to migrate any struct with data to insert to table
+func (s *Repositories) Seeder() error {
+	for i := range migrations.DataSeeds {
+		tx := s.db.Begin()
+		defer func() {
+			if r := recover(); r != nil {
+				tx.Rollback()
+			}
+		}()
+
+		if err := tx.Clauses(clause.OnConflict{DoNothing: true}).Create(migrations.DataSeeds[i]).Error; nil != err {
+			tx.Rollback()
+		}
+
+		if err := tx.Commit().Error; nil != err {
+			tx.Rollback()
+		}
+	}
+	return nil
+}
+
+// AddForeignKey to
 //func (s *Repositories) AddForeignKey() error {
 //	var err error
 //	return err

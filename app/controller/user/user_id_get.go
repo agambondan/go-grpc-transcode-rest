@@ -10,6 +10,8 @@ import (
 )
 
 func (c *Controller) FindByID(ctx context.Context, paginateRequest *pb.PaginateRequest) (*structpb.Value, error) {
+	ctx, cancelFunc := context.WithCancel(ctx)
+	defer cancelFunc()
 	baseResponse := model.BaseResponse{}
 	// init response message
 	message := make(map[string]interface{})
