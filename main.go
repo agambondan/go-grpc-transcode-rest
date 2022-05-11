@@ -48,6 +48,7 @@ func main() {
 	// it shows your line code while print
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	server.Init()
+	// run rest http 2
 	go func() {
 		// init mux server
 		mux := runtime.NewServeMux(
@@ -77,6 +78,12 @@ func main() {
 		log.Fatalln(http.ListenAndServe(fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT_GRPC_TRANSCODE")), mux))
 	}()
 
+	//run rest http framework
+	go func() {
+		server.RunRestFiber(fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT_GRPC_TRANSCODE_FRAMEWORK")))
+	}()
+
+	// run grpc server
 	// make listener for tcp protocol grpc server
 	listener, err := net.Listen(os.Getenv("TCP_NETWORK"), fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT_GRPC")))
 	if err != nil {

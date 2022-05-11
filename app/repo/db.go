@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"github.com/agambondan/web-go-blog-grpc-rest/app/config"
 	"github.com/agambondan/web-go-blog-grpc-rest/app/migrations"
+	"github.com/morkid/gocache"
+	cache_redis "github.com/morkid/gocache-redis/v8"
+	"github.com/morkid/paginate"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -11,7 +14,11 @@ import (
 	"gorm.io/gorm/schema"
 	"log"
 	"os"
+	"strconv"
+	"time"
 )
+
+var PG *paginate.Pagination
 
 type Repositories struct {
 	//Role     RoleRepository
@@ -52,6 +59,23 @@ func NewRepositories() (*Repositories, error) {
 			panic(err)
 		}
 	}
+
+	var cache *gocache.AdapterInterface
+	cacheSeconds := 1
+	cacheSeconds, _ = strconv.Atoi(os.Getenv("CACHE_TTL_SECONDS"))
+
+	if nil != REDIS && cacheSeconds > 0 {
+		cache = cache_redis.NewRedisCache(cache_redis.RedisCacheConfig{
+			Client:    REDIS,
+			ExpiresIn: time.Duration(cacheSeconds) * time.Second,
+		})
+	}
+
+	PG = paginate.New(&paginate.Config{
+		CacheAdapter:         cache,
+		FieldSelectorEnabled: true,
+	})
+
 	fmt.Printf("We are connected to the %s database with url %s\n", config.Config.DBDriver, dsn)
 	return &Repositories{
 		User: NewUserRepository(db),

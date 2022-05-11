@@ -30,3 +30,7 @@ func (server *ServerHttp) RunGRPC(grpcServer *grpc.Server) {
 	server.Server = grpcServer
 	server.routesGRPC(server.Server, server.Repositories)
 }
+
+func (server *ServerHttp) RunRestFiber(addr string) {
+	server.routesRestFiber(addr)
+}
